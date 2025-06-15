@@ -85,37 +85,83 @@ if (animatedContainer) {
   animatedRenderer.shadowMap.enabled = true;
   animatedContainer.appendChild(animatedRenderer.domElement);
 
-  // Lumière directionnelle douce (optionnelle)
-  const aLight1 = new THREE.DirectionalLight(0xffffff, 0.12);
+  // Lumière principale douce
+  const aLight1 = new THREE.DirectionalLight(0xffffff, 0.45);
   aLight1.position.set(10, 18, 8);
   aLight1.castShadow = false;
   animatedScene.add(aLight1);
-  // Ambiance très faible
-  const aLight2 = new THREE.AmbientLight(0xffffff, 0.18);
+  // Ambiance douce
+  const aLight2 = new THREE.AmbientLight(0xffffff, 0.5);
   animatedScene.add(aLight2);
 
-  // === Spotlights dynamiques pour ombres mouvantes ===
-  const spotCount = 2;
-  const spots = [];
-  const spotColors = [0xffffff, 0xffffff];
-  for (let i = 0; i < spotCount; i++) {
-    const color = spotColors[i % spotColors.length];
-    const spot = new THREE.SpotLight(color, 2.2, 40, Math.PI / 16, 0.18, 1);
-    spot.position.set(0, 18, 0);
-    spot.target.position.set(0, 0, 0);
-    spot.castShadow = true;
-    spot.shadow.mapSize.width = 4096;
-    spot.shadow.mapSize.height = 4096;
-    spot.shadow.radius = 4;
-    spot.shadow.bias = -0.0007;
-    spot.shadow.blurSamples = 8;
-    spot.penumbra = 0.4;
-    spot.decay = 2;
-    spot.distance = 60;
-    animatedScene.add(spot);
-    animatedScene.add(spot.target);
-    spots.push(spot);
-  }
+  // Chargement du modèle animé
+  const animatedLoader = new GLTFLoader();
+  let animatedModel, mixer = null, actions = [], allClips = [], playing = false;
+  animatedLoader.load('picodeon-animated.glb',
+    gltf => {
+      animatedModel = gltf.scene;
+      animatedModel.position.z = -5; // place le modèle plus haut sur l'axe Y
+      animatedScene.add(animatedModel);
+      // Animation GLTF : chaque animation une seule fois, puis restart
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(animatedModel);
+        let actions = gltf.animations.map(clip => {
+          const action = mixer.clipAction(clip);
+          action.reset();
+          action.setLoop(THREE.LoopOnce, 1);
+          action.clampWhenFinished = true;
+          return action;
+        });
+        let finishedCount = 0;
+        actions.forEach(action => {
+          action.play();
+          action._hasFinished = false;
+        });
+        mixer.addEventListener('finished', () => {
+          finishedCount++;
+          if (finishedCount === actions.length) {
+            setTimeout(() => {
+              finishedCount = 0;
+              actions.forEach(action => {
+                action.reset();
+                action.play();
+              });
+            }, 5000);
+          }
+        });
+      }
+    },
+    undefined,
+    err => console.error('Erreur GLTF animé:', err)
+  );
+
+  // === Spotlights animés classiques ===
+  const spot1 = new THREE.SpotLight(0xfff6e0, 0.7, 40, Math.PI / 7, 0.28, 1);
+  spot1.position.set(-6, 18, 0);
+  spot1.target.position.set(0, 0, 0);
+  spot1.castShadow = true;
+  spot1.shadow.mapSize.width = 2048;
+  spot1.shadow.mapSize.height = 2048;
+  spot1.shadow.radius = 6;
+  spot1.shadow.bias = -0.0012;
+  spot1.shadow.blurSamples = 6;
+  spot1.penumbra = 0.3;
+  animatedScene.add(spot1);
+  animatedScene.add(spot1.target);
+
+  const spot2 = new THREE.SpotLight(0x80aaff, 0.5, 40, Math.PI / 8, 0.32, 1);
+  spot2.position.set(6, 18, 0);
+  spot2.target.position.set(0, 0, 0);
+  spot2.castShadow = true;
+  spot2.shadow.mapSize.width = 2048;
+  spot2.shadow.mapSize.height = 2048;
+  spot2.shadow.radius = 6;
+  spot2.shadow.bias = -0.0012;
+  spot2.shadow.blurSamples = 6;
+  spot2.penumbra = 0.3;
+  animatedScene.add(spot2);
+  animatedScene.add(spot2.target);
+
   let spotTime = 0;
 
   window.addEventListener('resize', () => {
@@ -127,14 +173,12 @@ if (animatedContainer) {
   function animateAnimated() {
     requestAnimationFrame(animateAnimated);
     if (mixer) mixer.update(0.016);
-    // Animation des spots gauche-droite pour créer des ombres mouvantes
+    // Animation des spots gauche-droite
     spotTime += 0.016;
-    const amplitude = 10;
-    const speed = 0.7;
-    for (let i = 0; i < spots.length; i++) {
-      const phase = (i / spots.length) * Math.PI;
-      spots[i].position.x = amplitude * Math.cos(spotTime * speed + phase);
-    }
+    const amplitude = 6;
+    const speed = 1.2;
+    spot1.position.x = -amplitude * Math.cos(spotTime * speed);
+    spot2.position.x = amplitude * Math.cos(spotTime * speed);
     animatedRenderer.render(animatedScene, animatedCamera);
   }
   animateAnimated();
