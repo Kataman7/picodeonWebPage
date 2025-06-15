@@ -41,6 +41,19 @@ scene.add(ambient);
 
 const loader = new GLTFLoader();
 let model;
+
+// Variables for Viewer 1 animation state
+let animationStateV1 = "STATE_V1_STATIC_FRONT";
+let animationStateV1StartTime = performance.now();
+const TARGET_ROTATION_Y_FRONT = 0;
+const TARGET_ROTATION_Y_BACK = Math.PI;
+const TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE = 2 * Math.PI; // For completing the full turn
+
+const DURATION_V1_STATIC_FRONT = 6000; // 5 seconds
+const DURATION_V1_ROTATING_TO_BACK = 5000; // 3 seconds
+const DURATION_V1_STATIC_BACK = 4000; // 3 seconds (for staying at the back)
+const DURATION_V1_ROTATING_TO_FRONT_FULL_CIRCLE = 5000; // 3 seconds (for rotating from back to front, completing the circle)
+
 loader.load('picodeon.glb',
   gltf => { 
     model = gltf.scene;
@@ -85,7 +98,48 @@ function animate() {
   const now = performance.now();
   if (now - lastFrame < 33) return; // ~30 FPS max
   lastFrame = now;
-  if (mainViewerActive && model) model.rotation.y += 0.002;
+
+  if (mainViewerActive && model) {
+    const currentTime = now;
+    const elapsedTimeInState = currentTime - animationStateV1StartTime;
+
+    if (animationStateV1 === "STATE_V1_STATIC_FRONT") {
+        model.rotation.y = TARGET_ROTATION_Y_FRONT;
+        if (elapsedTimeInState >= DURATION_V1_STATIC_FRONT) {
+            animationStateV1 = "STATE_V1_ROTATING_TO_BACK";
+            animationStateV1StartTime = currentTime;
+        }
+    } else if (animationStateV1 === "STATE_V1_ROTATING_TO_BACK") {
+        let progress = elapsedTimeInState / DURATION_V1_ROTATING_TO_BACK;
+        if (progress >= 1) {
+            progress = 1; // Clamp progress
+            model.rotation.y = TARGET_ROTATION_Y_BACK;
+            animationStateV1 = "STATE_V1_STATIC_BACK"; // Transition to static back state
+            animationStateV1StartTime = currentTime;
+        } else {
+            model.rotation.y = TARGET_ROTATION_Y_FRONT + (TARGET_ROTATION_Y_BACK - TARGET_ROTATION_Y_FRONT) * progress;
+        }
+    } else if (animationStateV1 === "STATE_V1_STATIC_BACK") { 
+        model.rotation.y = TARGET_ROTATION_Y_BACK; // Ensure it stays at back
+        if (elapsedTimeInState >= DURATION_V1_STATIC_BACK) {
+            animationStateV1 = "STATE_V1_ROTATING_TO_FRONT_FULL_CIRCLE"; // Transition to full circle rotation
+            animationStateV1StartTime = currentTime;
+        }
+    } else if (animationStateV1 === "STATE_V1_ROTATING_TO_FRONT_FULL_CIRCLE") { 
+        let progress = elapsedTimeInState / DURATION_V1_ROTATING_TO_FRONT_FULL_CIRCLE;
+        if (progress >= 1) {
+            progress = 1; // Clamp progress
+            // model.rotation.y will be TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE here.
+            // Reset to TARGET_ROTATION_Y_FRONT for the next cycle to start from 0 visually.
+            model.rotation.y = TARGET_ROTATION_Y_FRONT; 
+            animationStateV1 = "STATE_V1_STATIC_FRONT";   // Loop back to static front state
+            animationStateV1StartTime = currentTime;
+        } else {
+            // Interpolate from back (PI) to front (2*PI) continuing the same direction
+            model.rotation.y = TARGET_ROTATION_Y_BACK + (TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE - TARGET_ROTATION_Y_BACK) * progress;
+        }
+    }
+  }
   renderer.render(scene, camera);
 }
 animate();
