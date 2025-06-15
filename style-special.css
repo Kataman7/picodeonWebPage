@@ -146,7 +146,7 @@ body {
   width: 100vw;
   max-width: 100vw;
   overflow-x: hidden;
-  background: var(--color-dark, #181c24);
+  background: #222; /* Updated from var(--color-dark, #181c24) to #222 */
   color: var(--color-light, #fff);
   font-size: 1.25em;
   padding: 2.5em 5vw 2.5em 5vw;
@@ -195,7 +195,7 @@ body {
   max-height: 60vh;
   display: block;
   margin: 0 auto;
-  background: transparent;
+  background: #222; /* Updated from transparent to #222 */
   pointer-events: auto;
 }
 

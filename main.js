@@ -228,7 +228,7 @@ function showLoader() {
     loader.style.alignItems = 'center';
     loader.style.justifyContent = 'center';
     loader.style.zIndex = 9999;
-    loader.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style=\'color:var(--white,#FAFAFA);font-size:2em;font-family:Tilt Neon,sans-serif;letter-spacing:0.05em;text-align:center;line-height:1.3;margin-bottom:2em;\'>Bienvenue sur PicoKeebs<br><span style=\'font-size:0.7em;opacity:0.8\'>Chargement de votre page…</span></div><img src="img/loading.gif" alt="Chargement..." style="width:220px;height:220px;display:block;"/></div>';
+    loader.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style=\'font-family:"Tilt Neon",sans-serif;text-align:center;margin-bottom:2em;\'><div style=\'font-size:3.5em;letter-spacing:0.05em;line-height:1.2;margin-bottom:0.4em;color:#FAFAFA;\'>PicoKeebs</div><div style=\'font-size:1.2em;opacity:0.8;letter-spacing:0.02em;color:#FAFAFA;\'>Chargement de la page en cours...</div></div><img src="img/loading.gif" alt="Chargement..." style="width:180px;height:180px;display:block;"/></div>';
     document.body.appendChild(loader);
   } else {
     loader.style.display = 'flex';
