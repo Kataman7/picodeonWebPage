@@ -100,6 +100,19 @@
     color: var(--black);
 }
 
+/* Footer liens espacés */
+.pk_footer-links {
+  display: flex;
+  gap: 2.2em;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.pk_footer-links .pk_link {
+  font-size: 1.08em;
+  opacity: 0.92;
+}
+
 .pk_product {
     margin: 20px;
     display: flex;
