@@ -197,12 +197,12 @@ function showLoader() {
     loader.style.left = 0;
     loader.style.width = '100vw';
     loader.style.height = '100vh';
-    loader.style.background = 'var(--color-dark, #181c24)';
+    loader.style.background = 'var(--black, #222)';
     loader.style.display = 'flex';
     loader.style.alignItems = 'center';
     loader.style.justifyContent = 'center';
     loader.style.zIndex = 9999;
-    loader.innerHTML = '<div style="background:#fff;padding:2.2em 2.5em;border-radius:18px;box-shadow:0 4px 32px #0002;color:#181c24;font-size:2.2em;font-family:Tilt Neon,sans-serif;letter-spacing:0.05em;text-align:center;line-height:1.3;">Bienvenue sur PicoKeebs<br><span style=\'font-size:0.7em;opacity:0.8\'>Chargement de votre page…</span></div>';
+    loader.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style=\'color:var(--white,#FAFAFA);font-size:2em;font-family:Tilt Neon,sans-serif;letter-spacing:0.05em;text-align:center;line-height:1.3;margin-bottom:2em;\'>Bienvenue sur PicoKeebs<br><span style=\'font-size:0.7em;opacity:0.8\'>Chargement de votre page…</span></div><img src="img/loading.gif" alt="Chargement..." style="width:220px;height:220px;display:block;"/></div>';
     document.body.appendChild(loader);
   } else {
     loader.style.display = 'flex';
