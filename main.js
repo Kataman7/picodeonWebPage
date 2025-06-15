@@ -62,10 +62,30 @@ window.addEventListener('resize', () => {
   renderer.setSize(container.clientWidth, container.clientHeight);
 });
 
-// Rotation automatique du modèle 3D
+// === OPTIMISATIONS PERFORMANCE ===
+function isMobile() {
+  return window.innerWidth < 800 || /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+}
+
+// Limite le pixelRatio sur mobile
+const maxPixelRatio = isMobile() ? 1.2 : 2;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+
+// Désactive les ombres sur mobile
+if (isMobile()) {
+  renderer.shadowMap.enabled = false;
+  spotLight1.castShadow = false;
+  spotLight2.castShadow = false;
+}
+
+// Limite le framerate à 30 FPS sur tous les appareils
+let lastFrame = 0;
 function animate() {
   requestAnimationFrame(animate);
-  if (model) model.rotation.y += 0.002;
+  const now = performance.now();
+  if (now - lastFrame < 33) return; // ~30 FPS max
+  lastFrame = now;
+  if (mainViewerActive && model) model.rotation.y += 0.002;
   renderer.render(scene, camera);
 }
 animate();
@@ -172,15 +192,21 @@ if (animatedContainer) {
     animatedRenderer.setSize(animatedContainer.clientWidth, animatedContainer.clientHeight);
   });
 
+  // === Utilisation d'une variable de frame séparée pour le viewer animé ===
+  let lastAnimatedFrame = 0;
   function animateAnimated() {
     requestAnimationFrame(animateAnimated);
-    if (mixer) mixer.update(0.016);
-    // Animation des spots gauche-droite
-    spotTime += 0.016;
-    const amplitude = 6;
-    const speed = 1.2;
-    spot1.position.x = -amplitude * Math.cos(spotTime * speed);
-    spot2.position.x = amplitude * Math.cos(spotTime * speed);
+    const now = performance.now();
+    if (now - lastAnimatedFrame < 33) return; // ~30 FPS max
+    lastAnimatedFrame = now;
+    if (animatedViewerActive && mixer) {
+      mixer.update(0.016);
+      spotTime += 0.016;
+      const amplitude = 6;
+      const speed = 1.2;
+      spot1.position.x = -amplitude * Math.cos(spotTime * speed);
+      spot2.position.x = amplitude * Math.cos(spotTime * speed);
+    }
     animatedRenderer.render(animatedScene, animatedCamera);
   }
   animateAnimated();
@@ -236,3 +262,39 @@ loader.load('picodeon.glb',
   undefined,
   err => { console.error('Erreur GLTF:', err); modelLoaded = true; if (modelLoaded && (animatedModelLoaded || !animatedContainer)) hideLoader(); }
 );
+
+// === Gestion de la pause/reprise des viewers 3D selon la visibilité ===
+var mainViewerActive = true;
+var animatedViewerActive = true;
+function isElementInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top < window.innerHeight &&
+    rect.bottom > 0 &&
+    rect.left < window.innerWidth &&
+    rect.right > 0
+  );
+}
+function checkViewersVisibility() {
+  // Pause le main viewer si pas visible
+  if (container) {
+    const visible = isElementInViewport(container);
+    mainViewerActive = visible;
+  }
+  // Pause le viewer animé si pas visible
+  if (animatedContainer) {
+    const visible = isElementInViewport(animatedContainer);
+    animatedViewerActive = visible;
+  }
+}
+window.addEventListener('scroll', checkViewersVisibility);
+window.addEventListener('resize', checkViewersVisibility);
+setInterval(checkViewersVisibility, 500);
+
+// Pause l'animation si l'onglet est inactif
+let pageActive = true;
+document.addEventListener('visibilitychange', () => {
+  pageActive = !document.hidden;
+  mainViewerActive = pageActive && isElementInViewport(container);
+  if (animatedContainer) animatedViewerActive = pageActive && isElementInViewport(animatedContainer);
+});
