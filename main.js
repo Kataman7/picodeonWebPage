@@ -102,6 +102,8 @@ if (animatedContainer) {
       animatedModel = gltf.scene;
       animatedModel.position.z = -5; // place le modèle plus haut sur l'axe Y
       animatedScene.add(animatedModel);
+      animatedModelLoaded = true;
+      if (modelLoaded && animatedModelLoaded) hideLoader();
       // Animation GLTF : chaque animation une seule fois, puis restart
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(animatedModel);
@@ -132,7 +134,7 @@ if (animatedContainer) {
       }
     },
     undefined,
-    err => console.error('Erreur GLTF animé:', err)
+    err => { console.error('Erreur GLTF animé:', err); animatedModelLoaded = true; if (modelLoaded && animatedModelLoaded) hideLoader(); }
   );
 
   // === Spotlights animés classiques ===
@@ -183,3 +185,54 @@ if (animatedContainer) {
   }
   animateAnimated();
 }
+
+// === Ajout d'un loader visuel ===
+function showLoader() {
+  let loader = document.getElementById('pk-loader');
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.id = 'pk-loader';
+    loader.style.position = 'fixed';
+    loader.style.top = 0;
+    loader.style.left = 0;
+    loader.style.width = '100vw';
+    loader.style.height = '100vh';
+    loader.style.background = 'var(--color-dark, #181c24)';
+    loader.style.display = 'flex';
+    loader.style.alignItems = 'center';
+    loader.style.justifyContent = 'center';
+    loader.style.zIndex = 9999;
+    loader.innerHTML = '<div style="background:#fff;padding:2.2em 2.5em;border-radius:18px;box-shadow:0 4px 32px #0002;color:#181c24;font-size:2.2em;font-family:Tilt Neon,sans-serif;letter-spacing:0.05em;text-align:center;line-height:1.3;">Bienvenue sur PicoKeebs<br><span style=\'font-size:0.7em;opacity:0.8\'>Chargement de votre page…</span></div>';
+    document.body.appendChild(loader);
+  } else {
+    loader.style.display = 'flex';
+  }
+}
+function hideLoader() {
+  const loader = document.getElementById('pk-loader');
+  if (loader) loader.style.display = 'none';
+}
+
+showLoader();
+
+// === Chargement du modèle principal ===
+let modelLoaded = false, animatedModelLoaded = false;
+loader.load('picodeon.glb',
+  gltf => { 
+    if (!model) {
+      model = gltf.scene;
+      model.traverse(obj => {
+        if (obj.isMesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+        }
+      });
+      model.position.y = 0;
+      scene.add(model);
+    }
+    modelLoaded = true;
+    if (modelLoaded && (animatedModelLoaded || !animatedContainer)) hideLoader();
+  },
+  undefined,
+  err => { console.error('Erreur GLTF:', err); modelLoaded = true; if (modelLoaded && (animatedModelLoaded || !animatedContainer)) hideLoader(); }
+);
