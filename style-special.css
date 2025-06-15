@@ -243,11 +243,17 @@ body {
 @media (max-width: 900px) {
   .gallery-row {
     flex-direction: column;
-    gap: 1.5em;
-    align-items: center;
+    align-items: center; /* Center items in the column */
+    gap: 0; /* Remove gap, will use margin on photos */
   }
   .gallery-photo {
-    max-width: 90vw;
+    flex: none; /* Reset desktop flex behavior to control width directly */
+    width: 90%; /* Make photos take up most of the container width */
+    max-width: 450px; /* Set a max-width for larger phone screens */
+    margin-bottom: 1.5em; /* Add space between stacked photos */
+  }
+  .gallery-photo:last-child {
+    margin-bottom: 0; /* No margin for the last photo */
   }
 }
 
