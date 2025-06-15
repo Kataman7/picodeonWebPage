@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Picodeon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style-picokeebs.css">
+  <link rel="stylesheet" href="style-special.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+</head>
+
+<body>
+  <header class="pk_header">
+    <h1 class="pk_titre">Picodeon</h1>
+  </header>
+  <main class="">
+    <p class="pk_soustitre">A MIDI chromatic accordion keyboard</p>
+  </main>
+  <div class="main-content">
+    <div class="three-cols-layout">
+      <div class="side-text left">
+        <p>Le <strong>Picodeon</strong> est un contrôleur MIDI compact et silencieux, inspiré des <strong>claviers
+            chromatiques d’accordéon</strong>. Il n’écrit pas de texte : chaque touche envoie un signal MIDI, permettant
+          de jouer avec n’importe quel synthétiseur ou logiciel audio.</p>
+
+        <p>Grâce à sa <strong>disposition en colonnes</strong>, il offre une expérience de jeu fluide, intuitive et
+          expressive. Il s’adresse autant aux accordéonistes qu’aux musiciens curieux d’explorer une interface musicale
+          originale.</p>
+
+        <p>Le Picodeon est assemblé à la main et livré <strong>prêt à l’emploi</strong> avec un <strong>étui de
+            transport</strong> et un <strong>câble USB-C</strong>. Il fonctionne immédiatement avec tous les systèmes
+          compatibles MIDI.</p>
+
+        <p>Le <strong>firmware est mis à jour régulièrement</strong>, et certaines touches sont prévues pour accueillir
+          de futures fonctionnalités. Le projet et les firmwares sont disponibles sur le <strong>GitHub du
+            créateur</strong>.</p>
+
+
+      </div>
+      <div class="viewer-col">
+        <div class="viewer" id="viewer"></div>
+      </div>
+      <div class="side-text right">
+        <p>Le Picodeon existe en deux versions : l’une avec un <strong>châssis en aluminium</strong> (blanche), l’autre
+          en <strong>FR4</strong> (noire), montée avec <strong>entretoises et vis en laiton</strong>. Ces deux modèles
+          sont également robustes et pensés pour durer.</p>
+
+        <p>Il est équipé de <strong>switches Outemu White Silent</strong>, silencieux et réactifs. La version
+          <strong>hot-swap</strong> permet de les retirer sans soudure, et accepte tous les <strong>switches MX
+            compatibles</strong>.</p>
+
+        <p>Les <strong>keycaps en PBT</strong> fournis sont également remplaçables par n’importe quel <strong>keycap
+            MX</strong>, offrant une personnalisation complète, aussi bien visuelle que tactile.</p>
+
+        <p>Avec son port <strong>USB-C</strong> et un <strong>firmware libre et évolutif</strong>, le Picodeon s’intègre
+          facilement à tout environnement de production musicale.</p>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="banner-section">
+    <p>Le Picodeon repose sur une conception modulaire et durable, pensée pour être <strong>facilement démontable et
+        réparable</strong>. Il est composé d’un <strong>PCB principal</strong>, d’un <strong>microcontrôleur RP2040
+        Zero</strong>, d’une <strong>plaque supérieure</strong> et d’un <strong>socle vissé</strong>, l’ensemble étant
+      maintenu solidement par des <strong>entretoises (standoffs)</strong> en laiton. Ce montage en "sandwich" assure à
+      la fois rigidité, simplicité d’assemblage et longévité. En cas de besoin, chaque composant peut être remplacé ou
+      ajusté avec un minimum d’outillage, garantissant ainsi un instrument fait pour durer.</p>
+  </div>
+  <div class="animated-viewer-section">
+    <div class="animated-viewer" id="animated-viewer"></div>
+  </div>
+  <div class="stripe-buy-section"
+    style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 2.5em 0 2.5em 0;">
+    <div style="text-align: center; margin-bottom: 1em; max-width: 420px;">
+      <strong>Paiement sécurisé Stripe</strong><br>
+      Vous recevrez un mail de confirmation une fois que le vendeur aura vu et validé la commande.
+    </div>
+    <stripe-buy-button buy-button-id="buy_btn_1RaGxtJZfZQQklYe8QtfVsek"
+      publishable-key="pk_live_51Oi2OuJZfZQQklYeXdoDS7KYnXvXtZlKJeorFfYBsWvfnNyPyG7JORdHB1dgX0PRmyUJxjhiw3VbtPVpZqmqomf800mFVcl4Ih">
+    </stripe-buy-button>
+  </div>
+  <section class="gallery-section">
+    <div class="gallery-row">
+      <div class="gallery-photo"><img src="img/picodeon_alu1.jpg" alt="Photo 1" /></div>
+      <div class="gallery-photo"><img src="img/picodeon_alu2.jpg" alt="Photo 2" /></div>
+      <div class="gallery-photo"><img src="img/picodeon_alu3.jpg" alt="Photo 3" /></div>
+    </div>
+  </section>
+  <footer style="display:none"></footer>
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>
