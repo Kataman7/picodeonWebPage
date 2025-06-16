@@ -93,12 +93,15 @@ if (isMobile()) {
   spotLight2.castShadow = false;
 }
 
-// Limite le framerate à 30 FPS sur tous les appareils
+// === Limitation du framerate (pour les deux viewers) ===
+const targetFPS = 23; // Modifie cette valeur pour tester différents framerates
+const frameDuration = 1000 / targetFPS;
+
 let lastFrame = 0;
 function animate() {
   requestAnimationFrame(animate);
   const now = performance.now();
-  if (now - lastFrame < 33) return; // ~30 FPS max
+  if (now - lastFrame < frameDuration) return;
   lastFrame = now;
   if (mainViewerActive && model) {
     // plus de rotation automatique
@@ -112,13 +115,13 @@ animate();
 const animatedContainer = document.getElementById('animated-viewer');
 if (animatedContainer) {
   const animatedScene = new THREE.Scene();
-  // Ajout d'une lumière ambiante pour le viewer animé
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  // Lumière ambiante unique pour le viewer animé
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   animatedScene.add(ambientLight);
 
   const animatedCamera = new THREE.PerspectiveCamera(45, animatedContainer.clientWidth / animatedContainer.clientHeight, 0.1, 100);
-  animatedCamera.position.set(0, 10, 0); // Vue parfaitement au-dessus
-  animatedCamera.up.set(0, 0, -1); // Pour que l'avant du modèle soit vers le bas de l'écran
+  animatedCamera.position.set(0, 10, 0);
+  animatedCamera.up.set(0, 0, -1);
   animatedCamera.lookAt(0, 0, 0);
 
   const animatedRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -132,23 +135,18 @@ if (animatedContainer) {
   aLight1.position.set(10, 18, 8);
   aLight1.castShadow = false;
   animatedScene.add(aLight1);
-  // Ambiance douce
-  const aLight2 = new THREE.AmbientLight(0xffffff, 0.5);
-  animatedScene.add(aLight2);
 
   // Chargement du modèle animé
   const animatedLoader = new GLTFLoader();
-  let animatedModel, mixer = null, actions = [], allClips = [], playing = false;
+  let animatedModel, mixer = null, actions = [], allClips = [];
   animatedLoader.load('picodeon-animated.glb',
     gltf => {
       animatedModel = gltf.scene;
-      animatedModel.position.z = -5; // place le modèle plus haut sur l'axe Y
+      animatedModel.position.z = -5;
       animatedScene.add(animatedModel);
-      // SUPPRESSION de tout hideLoader ou animatedModelLoaded ici
-      // Animation GLTF : chaque animation une seule fois, puis restart
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(animatedModel);
-        let actions = gltf.animations.map(clip => {
+        actions = gltf.animations.map(clip => {
           const action = mixer.clipAction(clip);
           action.reset();
           action.setLoop(THREE.LoopOnce, 1);
@@ -178,7 +176,7 @@ if (animatedContainer) {
     err => { console.error('Erreur GLTF animé:', err); }
   );
 
-  // === Spotlights animés classiques ===
+  // Spotlights animés classiques
   const spot1 = new THREE.SpotLight(0xfff6e0, 0.7, 40, Math.PI / 7, 0.28, 1);
   spot1.position.set(-6, 18, 0);
   spot1.target.position.set(0, 0, 0);
@@ -213,19 +211,19 @@ if (animatedContainer) {
     animatedRenderer.setSize(animatedContainer.clientWidth, animatedContainer.clientHeight);
   });
 
-  // === Utilisation d'une variable de frame séparée pour le viewer animé ===
+  // Utilisation d'une variable de frame séparée pour le viewer animé
   let lastAnimatedFrame = 0;
   function animateAnimated() {
     requestAnimationFrame(animateAnimated);
     const now = performance.now();
-    if (now - lastAnimatedFrame < 33) return; // ~30 FPS max
+    if (now - lastAnimatedFrame < frameDuration) return;
     lastAnimatedFrame = now;
     if (animatedViewerActive && mixer) {
-      mixer.update(0.016);
+      let anyPlaying = actions.some(a => a.isRunning());
+      if (anyPlaying) mixer.update(0.016);
       spotTime += 0.016;
-      // Animation des spotlights de droite à gauche
-      const amplitude = 8; // distance de déplacement
-      const speed = 0.7; // vitesse
+      const amplitude = 8;
+      const speed = 0.7;
       spot1.position.x = -amplitude * Math.cos(spotTime * speed);
       spot2.position.x = amplitude * Math.cos(spotTime * speed);
     }
@@ -264,25 +262,21 @@ function hideLoader() {
 showLoader();
 
 // === Chargement du modèle principal ===
-let modelLoaded = false, animatedModelLoaded = false;
 loader.load('picodeon.glb',
   gltf => { 
-    if (!model) {
-      model = gltf.scene;
-      model.traverse(obj => {
-        if (obj.isMesh) {
-          obj.castShadow = true;
-          obj.receiveShadow = true;
-        }
-      });
-      model.position.y = 0;
-      scene.add(model);
-    }
-    modelLoaded = true;
-    hideLoader(); // On masque le loader dès que le viewer principal est chargé
+    model = gltf.scene;
+    model.traverse(obj => {
+      if (obj.isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
+    model.position.y = -6;
+    scene.add(model);
+    hideLoader();
   },
   undefined,
-  err => { console.error('Erreur GLTF:', err); modelLoaded = true; hideLoader(); }
+  err => { console.error('Erreur GLTF:', err); hideLoader(); }
 );
 
 // === Gestion de la pause/reprise des viewers 3D selon la visibilité ===
@@ -311,7 +305,6 @@ function checkViewersVisibility() {
 }
 window.addEventListener('scroll', checkViewersVisibility);
 window.addEventListener('resize', checkViewersVisibility);
-setInterval(checkViewersVisibility, 500);
 
 // Pause l'animation si l'onglet est inactif
 let pageActive = true;
