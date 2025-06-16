@@ -254,10 +254,12 @@ function showLoader() {
   } else {
     loader.style.display = 'flex';
   }
+  document.body.style.overflow = 'hidden'; // Bloquer le scroll
 }
 function hideLoader() {
   const loader = document.getElementById('pk-loader');
   if (loader) loader.style.display = 'none';
+  document.body.style.overflow = ''; // Rétablir le scroll
 }
 
 showLoader();
