@@ -1,0 +1,31 @@
+/* ...existing code... */
+
+/* Styles pour le viewer 3D principal (Base: Desktop) */
+#viewer {
+    width: 100%;
+    min-height: 70vh; /* Hauteur pour Desktop */
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    background-color: white; /* Temporary debug color */
+}
+
+/* Tablet (entre 768px et 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #viewer {
+        min-height: 100vh; /* Plus de hauteur pour tablette */
+        max-width: 75%;
+        /* La largeur reste 100% par défaut */
+    }
+}
+
+/* Mobile (jusqu'à 767px) */
+@media (max-width: 767px) {
+    #viewer {
+        width: 70%;       /* Largeur réduite davantage pour mobile */
+        min-height: 80vh; /* Hauteur pour mobile (bonne) */
+        /* margin: 0 auto; (hérité) centrera le viewer */
+    }
+}
+
+/* ...existing code... */

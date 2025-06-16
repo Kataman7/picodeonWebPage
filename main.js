@@ -75,6 +75,7 @@ window.addEventListener('resize', () => {
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
+  checkViewersVisibility(); // Added this line
 });
 
 // === OPTIMISATIONS PERFORMANCE ===
@@ -274,6 +275,12 @@ loader.load('picodeon.glb',
     model.position.y = -6;
     scene.add(model);
     hideLoader();
+
+    // Manually trigger a resize event after model is loaded and added
+    // This helps ensure camera aspect ratio is correct based on final CSS dimensions
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
   },
   undefined,
   err => { console.error('Erreur GLTF:', err); hideLoader(); }
