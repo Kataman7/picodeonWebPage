@@ -3,7 +3,7 @@
 body {
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   min-height: 100vh;
   box-sizing: border-box;
   font-family: system-ui, sans-serif;
@@ -13,7 +13,7 @@ body {
 }
 
 .main-content {
-  width: 100%;
+  width: 100%; /* Corrigé de 100vw à 100% */
   max-width: 100vw;
   margin: 0 auto;
   padding: 0;
@@ -107,7 +107,7 @@ body {
 }
 
 .viewer-col {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,7 +143,7 @@ body {
 
 /* Bannière sombre */
 .banner-section {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   max-width: 100vw;
   overflow-x: hidden;
   background: #222; /* Updated from var(--color-dark, #181c24) to #222 */
@@ -178,7 +178,7 @@ body {
 
 /* Viewer animé */
 .animated-viewer-section {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   min-height: 220px;
   background: var(--color-dark, #181c24);
   display: flex;
@@ -189,7 +189,7 @@ body {
   box-sizing: border-box;
 }
 .animated-viewer {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   height: 40vw;
   min-height: 120px;
   max-height: 60vh;
@@ -201,7 +201,7 @@ body {
 
 /* Galerie blanche */
 .gallery-section {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   background: #fff;
   padding: 2em 0 2em 0;
   display: flex;
@@ -259,7 +259,7 @@ body {
 
 /* Section achat (Stripe + liste) */
 .pk_buy-section {
-  width: 100vw;
+  width: 100%; /* Corrigé de 100vw à 100% */
   max-width: 100vw;
   display: flex;
   flex-direction: column;

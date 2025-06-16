@@ -280,10 +280,10 @@ loader.load('picodeon.glb',
       scene.add(model);
     }
     modelLoaded = true;
-    if (modelLoaded && (animatedModelLoaded || !animatedContainer)) hideLoader();
+    hideLoader(); // On masque le loader dès que le viewer principal est chargé
   },
   undefined,
-  err => { console.error('Erreur GLTF:', err); modelLoaded = true; if (modelLoaded && (animatedModelLoaded || !animatedContainer)) hideLoader(); }
+  err => { console.error('Erreur GLTF:', err); modelLoaded = true; hideLoader(); }
 );
 
 // === Gestion de la pause/reprise des viewers 3D selon la visibilité ===
