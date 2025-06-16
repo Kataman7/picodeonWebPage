@@ -144,8 +144,7 @@ if (animatedContainer) {
       animatedModel = gltf.scene;
       animatedModel.position.z = -5; // place le modèle plus haut sur l'axe Y
       animatedScene.add(animatedModel);
-      animatedModelLoaded = true;
-      if (modelLoaded && animatedModelLoaded) hideLoader();
+      // SUPPRESSION de tout hideLoader ou animatedModelLoaded ici
       // Animation GLTF : chaque animation une seule fois, puis restart
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(animatedModel);
@@ -176,7 +175,7 @@ if (animatedContainer) {
       }
     },
     undefined,
-    err => { console.error('Erreur GLTF animé:', err); animatedModelLoaded = true; if (modelLoaded && animatedModelLoaded) hideLoader(); }
+    err => { console.error('Erreur GLTF animé:', err); }
   );
 
   // === Spotlights animés classiques ===
