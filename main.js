@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const container = document.getElementById('viewer');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-camera.position.set(0, 6.2, 20); // Zoom légèrement plus proche
+camera.position.set(0, 0, 20); // Centré verticalement
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 // Amélioration de la netteté du rendu
@@ -12,6 +13,19 @@ renderer.setPixelRatio(Math.max(window.devicePixelRatio, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.shadowMap.enabled = true;
 container.appendChild(renderer.domElement);
+
+// Ajout OrbitControls pour le viewer 1
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0, 0); // Garde le modèle centré
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.minPolarAngle = Math.PI / 2;
+controls.maxPolarAngle = Math.PI / 2;
+controls.minAzimuthAngle = -Infinity;
+controls.maxAzimuthAngle = Infinity;
+controls.update();
 
 // Lumière principale plus lumineuse
 const spotLight1 = new THREE.SpotLight(0xfff6e0, 2.2); // blanc chaud, intensité augmentée
@@ -42,18 +56,6 @@ scene.add(ambient);
 const loader = new GLTFLoader();
 let model;
 
-// Variables for Viewer 1 animation state
-let animationStateV1 = "STATE_V1_STATIC_FRONT";
-let animationStateV1StartTime = performance.now();
-const TARGET_ROTATION_Y_FRONT = 0;
-const TARGET_ROTATION_Y_BACK = Math.PI;
-const TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE = 2 * Math.PI; // For completing the full turn
-
-const DURATION_V1_STATIC_FRONT = 6000; // 5 seconds
-const DURATION_V1_ROTATING_TO_BACK = 5000; // 3 seconds
-const DURATION_V1_STATIC_BACK = 4000; // 3 seconds (for staying at the back)
-const DURATION_V1_ROTATING_TO_FRONT_FULL_CIRCLE = 5000; // 3 seconds (for rotating from back to front, completing the circle)
-
 loader.load('picodeon.glb',
   gltf => { 
     model = gltf.scene;
@@ -63,7 +65,7 @@ loader.load('picodeon.glb',
         obj.receiveShadow = true;
       }
     });
-    model.position.y = 0; // replacer le modèle à y=0
+    model.position.y = -6; // replacer le modèle à y=0
     scene.add(model); },
   undefined,
   err => console.error('Erreur GLTF:', err)
@@ -98,48 +100,10 @@ function animate() {
   const now = performance.now();
   if (now - lastFrame < 33) return; // ~30 FPS max
   lastFrame = now;
-
   if (mainViewerActive && model) {
-    const currentTime = now;
-    const elapsedTimeInState = currentTime - animationStateV1StartTime;
-
-    if (animationStateV1 === "STATE_V1_STATIC_FRONT") {
-        model.rotation.y = TARGET_ROTATION_Y_FRONT;
-        if (elapsedTimeInState >= DURATION_V1_STATIC_FRONT) {
-            animationStateV1 = "STATE_V1_ROTATING_TO_BACK";
-            animationStateV1StartTime = currentTime;
-        }
-    } else if (animationStateV1 === "STATE_V1_ROTATING_TO_BACK") {
-        let progress = elapsedTimeInState / DURATION_V1_ROTATING_TO_BACK;
-        if (progress >= 1) {
-            progress = 1; // Clamp progress
-            model.rotation.y = TARGET_ROTATION_Y_BACK;
-            animationStateV1 = "STATE_V1_STATIC_BACK"; // Transition to static back state
-            animationStateV1StartTime = currentTime;
-        } else {
-            model.rotation.y = TARGET_ROTATION_Y_FRONT + (TARGET_ROTATION_Y_BACK - TARGET_ROTATION_Y_FRONT) * progress;
-        }
-    } else if (animationStateV1 === "STATE_V1_STATIC_BACK") { 
-        model.rotation.y = TARGET_ROTATION_Y_BACK; // Ensure it stays at back
-        if (elapsedTimeInState >= DURATION_V1_STATIC_BACK) {
-            animationStateV1 = "STATE_V1_ROTATING_TO_FRONT_FULL_CIRCLE"; // Transition to full circle rotation
-            animationStateV1StartTime = currentTime;
-        }
-    } else if (animationStateV1 === "STATE_V1_ROTATING_TO_FRONT_FULL_CIRCLE") { 
-        let progress = elapsedTimeInState / DURATION_V1_ROTATING_TO_FRONT_FULL_CIRCLE;
-        if (progress >= 1) {
-            progress = 1; // Clamp progress
-            // model.rotation.y will be TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE here.
-            // Reset to TARGET_ROTATION_Y_FRONT for the next cycle to start from 0 visually.
-            model.rotation.y = TARGET_ROTATION_Y_FRONT; 
-            animationStateV1 = "STATE_V1_STATIC_FRONT";   // Loop back to static front state
-            animationStateV1StartTime = currentTime;
-        } else {
-            // Interpolate from back (PI) to front (2*PI) continuing the same direction
-            model.rotation.y = TARGET_ROTATION_Y_BACK + (TARGET_ROTATION_Y_FRONT_COMPLETE_CIRCLE - TARGET_ROTATION_Y_BACK) * progress;
-        }
-    }
+    // plus de rotation automatique
   }
+  controls.update();
   renderer.render(scene, camera);
 }
 animate();
@@ -148,6 +112,10 @@ animate();
 const animatedContainer = document.getElementById('animated-viewer');
 if (animatedContainer) {
   const animatedScene = new THREE.Scene();
+  // Ajout d'une lumière ambiante pour le viewer animé
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  animatedScene.add(ambientLight);
+
   const animatedCamera = new THREE.PerspectiveCamera(45, animatedContainer.clientWidth / animatedContainer.clientHeight, 0.1, 100);
   animatedCamera.position.set(0, 10, 0); // Vue parfaitement au-dessus
   animatedCamera.up.set(0, 0, -1); // Pour que l'avant du modèle soit vers le bas de l'écran
@@ -256,8 +224,9 @@ if (animatedContainer) {
     if (animatedViewerActive && mixer) {
       mixer.update(0.016);
       spotTime += 0.016;
-      const amplitude = 6;
-      const speed = 1.2;
+      // Animation des spotlights de droite à gauche
+      const amplitude = 8; // distance de déplacement
+      const speed = 0.7; // vitesse
       spot1.position.x = -amplitude * Math.cos(spotTime * speed);
       spot2.position.x = amplitude * Math.cos(spotTime * speed);
     }
