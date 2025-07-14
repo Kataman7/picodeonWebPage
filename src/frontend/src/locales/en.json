@@ -1,0 +1,46 @@
+{
+  "picodeon": {
+    "title": "The PicoDeon",
+    "description": "The **PicoDeon** is a compact and silent MIDI controller, inspired by **chromatic accordion keyboards**. It doesn't write text: each key sends a MIDI signal, allowing you to play with any synthesizer or audio software.",
+    "features": {
+      "intuitive": "Thanks to its **column layout**, it offers a fluid, intuitive and expressive playing experience. It appeals to both accordionists and musicians curious to explore an original musical interface.",
+      "readyToUse": "The PicoDeon is hand-assembled and delivered **ready to use** with a **carrying case** and a **USB-C cable**. It works immediately with all MIDI-compatible systems.",
+      "firmware": "The **firmware is regularly updated**, and some keys are designed to accommodate future features. The project and firmwares are available on the **creator's GitHub**.",
+      "versions": "The PicoDeon comes in two versions: one with an **aluminum chassis** (white), the other in **FR4** (black), mounted with **brass standoffs and screws**. Both models are equally robust and built to last.",
+      "switches": "It is equipped with **Outemu White Silent switches**, silent and responsive. The **hot-swap** version allows you to remove them without soldering, and accepts all **MX-compatible switches**.",
+      "keycaps": "The included **PBT keycaps** are also replaceable with any **MX keycap**, offering complete customization, both visual and tactile.",
+      "connectivity": "With its **USB-C** port and **free and evolving firmware**, the PicoDeon easily integrates into any music production environment."
+    },
+    "banner": {
+      "description": "The PicoDeon is based on a modular and durable design, designed to be **easily disassembled and repairable**. It consists of a **main PCB**, an **RP2040 Zero microcontroller**, a **top plate** and a **screwed base**, all held securely together by brass **standoffs**. This \"sandwich\" assembly ensures rigidity, assembly simplicity and longevity. If needed, each component can be replaced or adjusted with minimal tooling, ensuring an instrument built to last."
+    },
+    "gallery": {
+      "alt1": "PicoDeon aluminum view 1",
+      "alt2": "PicoDeon aluminum view 2",
+      "alt3": "PicoDeon aluminum view 3"
+    },
+    "loading": "Loading 3D model...",
+    "rotateHint": "Rotate with mouse",
+    "hero": {
+      "subtitle": "Chromatic MIDI controller inspired by accordion",
+      "description": "Discover a new way to play with this compact and silent MIDI keyboard, perfect for modern music creation."
+    },
+    "purchase": {
+      "title": "Order your PicoDeon",
+      "price": "Starting at €149",
+      "button": "Buy now",
+      "items": {
+        "picodeon": "The PicoDeon (non hotswap)",
+        "case": "The rigid carrying case",
+        "cable": "A USB-C cable",
+        "shipping": "🚚 Free shipping"
+      },
+      "payment": "Secure Stripe payment. You will receive a confirmation email once the seller has seen and validated the order."
+    },
+    "footer": {
+      "copyright": "© 2024 PicoDeon. All rights reserved.",
+      "github": "View on GitHub",
+      "contact": "Contact"
+    }
+  }
+}

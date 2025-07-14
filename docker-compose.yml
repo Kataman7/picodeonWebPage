@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  backend:
+    build: ./src/backend
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=mot_de_passe
+      - DB_NAME=maBase
+    volumes:
+      - ./src/backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./src/frontend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    volumes:
+      - ./src/frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: mot_de_passe
+      MYSQL_DATABASE: maBase
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql_data:
