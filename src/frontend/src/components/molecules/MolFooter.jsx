@@ -6,8 +6,10 @@ const MolFooter = () => {
   const footerLinks = [
     { href: "#discover", text: "Découvrir" },
     { href: "#buy", text: "Acheter" },
-    { href: "#", text: "Discord" },
-    { href: "#", text: "GitHub" }
+    { href: "https://discord.gg/W928ZUeahV", text: "Discord" },
+    { href: "https://github.com/Kataman7/PicoDeon", text: "GitHub" },
+    { href: "/assets/pdf/Conditions%20Générales%20de%20Vente.pdf", text: "Conditions Générales de Vente", target: "_blank" },
+    { href: "/assets/pdf/Mentions%20légales.pdf", text: "Mentions légales", target: "_blank" }
   ]
 
   const FooterLink = ({ href, text }) => (

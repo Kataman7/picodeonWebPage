@@ -26,7 +26,7 @@ const MolMainContent = () => {
       
       {/* Right 3D viewer */}
       <div className="flex justify-center">
-        <div className="w-full h-[85vh] max-w-2xl max-h-[780px]">
+        <div className="w-full h-[90vh] max-w-2xl max-h-[780px]">
           <AtmThreeViewer />
         </div>
       </div>
