@@ -1,5 +1,9 @@
 {
   "picodeon": {
+    "wishlist": {
+      "explanation": "Le Picodeon n'est pas encore disponible à la vente. Cette liste est une wishlist : la production sera lancée dès que 10 personnes seront inscrites. L'inscription n'engage à rien, un email sera envoyé dès le lancement !",
+      "button": "Être notifié à la sortie du Picodeon"
+    },
     "title": "Le PicoDeon",
     "description": "Le **PicoDeon** est un contrôleur MIDI compact et silencieux, inspiré des **claviers chromatiques d'accordéon**. Il n'écrit pas de texte : chaque touche envoie un signal MIDI, permettant de jouer avec n'importe quel synthétiseur ou logiciel audio.",
     "features": {

@@ -9,6 +9,7 @@ import MolPurchaseSection from '../components/molecules/MolPurchaseSection'
 import MolImageGrid from '../components/molecules/MolImageGrid'
 import OrgPicodeonFooter from '../components/organisms/OrgPicodeonFooter'
 import AtmThreeAnimatedViewerMobile from '../components/atoms/AtmThreeAnimatedViewerMobile'
+import AtmGoogleForm from '../components/atoms/AtmGoogleForm'
 
 const PagPicodeon = () => {
   return (

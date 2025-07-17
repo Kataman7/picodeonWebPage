@@ -1,5 +1,9 @@
 {
   "picodeon": {
+    "wishlist": {
+      "explanation": "The PicoDeon is not yet available for sale. This list is a wishlist: production will start as soon as 10 people have signed up. Signing up does not commit you to anything, you will simply be notified by email when it launches!",
+      "button": "Get notified when PicoDeon launches"
+    },
     "title": "The PicoDeon",
     "description": "The **PicoDeon** is a compact and silent MIDI controller, inspired by **chromatic accordion keyboards**. It doesn't write text: each key sends a MIDI signal, allowing you to play with any synthesizer or audio software.",
     "features": {
