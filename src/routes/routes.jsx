@@ -5,9 +5,8 @@ import PagPicodeon from '../pages/PagPicodeon'
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/picodeon" replace />} />
-      <Route path="/picodeon" element={<PagPicodeon />} />
-      <Route path="*" element={<Navigate to="/picodeon" replace />} />
+      <Route path="/" element={<PagPicodeon />} />
+      <Route path="*" element={<PagPicodeon />} />
     </Routes>
   )
 }
